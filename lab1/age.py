@@ -8,10 +8,13 @@ import datetime
 year = input("Year you were born: ")
 
 def age_calc():
-    clock = datetime.datetime.now().year
-    fixedyear = int(year)
-    age = clock - fixedyear
-    return age
+    try:
+        clock = datetime.datetime.now().year
+        fixedyear = int(year)
+        age = clock - fixedyear
+        return age
+    except ValueError:
+        print("It needs to be a number. Try again.")
 
 end = age_calc()
 print("You are " + str(end) + " years old.")
