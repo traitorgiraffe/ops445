@@ -9,3 +9,9 @@ def namefile():
         pachyderm.write("This is the story of " + namehippo)
 
 namefile()
+
+
+def helloWorld():
+    print("Hello World")
+
+helloWorld()

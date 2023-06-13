@@ -14,3 +14,9 @@ def printhippo(name, args):
 
 
 printhippo(name,args)
+
+
+def helloWorld():
+    print("Hello World")
+
+helloWorld()

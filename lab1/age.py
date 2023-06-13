@@ -20,3 +20,7 @@ print("You are " + str(end) + " years old.")
 # this should be right? 
 
 
+def helloWorld():
+    print("Hello World")
+
+helloWorld()
