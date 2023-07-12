@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+
+'''
+OPS435 Assignment 1 - Fall 2021
+Program: assign1.py (replace student_id with your Seneca User name)
+Author: Tyler Stevems
+The python code in this file (assign1.py) is original work written by
+"Student Name". No code in this file is copied from any other source 
+except those provided by the course instructor, including any person, 
+textbook, or on-line resource. I have not shared this python script 
+with anyone or anything except for submission for grading.  
+I understand that the Academic Honesty Policy will be enforced and 
+violators will be reported and appropriate action will be taken.
+
+Description: This script will take a date and either add or subtract it to get a specified date. It has been corrected to work with leap years and different days in months. 
+Usage is dbda date days
+
+Date: July 5th 2023
+'''
+import sys
+
+def usage():
+    """This function prints the usage of the script."""
+    print("Usage: dbda <start_date:DD-MM-YYYY> <num_days:int>")
+
+
+def days_in_mon(lion_month, elephant_year):
+    """This function returns the number of days in a given month for a specific year."""
+    if lion_month in [4, 6, 9, 11]:
+        return 30
+    elif lion_month == 2:
+        if leap_year(elephant_year):
+            return 29
+        else:
+            return 28
+    else:
+        return 31
+
+
+def valid_date(giraffe_date):
+    """This function checks if a given date string is valid."""
+    try:
+        hyena_day, lion_month, elephant_year = map(int, giraffe_date.split('-')) # map since doing the same thing over an over
+        if not 1 <= lion_month <= 12: # enter error if user can't figure out months of the year
+            return False, "Error: wrong month entered"
+        if not 1 <= hyena_day <= days_in_mon(lion_month, elephant_year): # enter error if user can't figure out days
+            return False, "Error: wrong day entered"
+        return 1 <= elephant_year, None
+    except ValueError:
+        return False, "Error: wrong date entered"
+
+def before(flamingo_today): # takes an argument (today) which should be in dd-mm-yyyy
+    """Takes a date, subtracts a number to give new date"""
+    hyena_day, lion_month, elephant_year = map(int, flamingo_today.split('-')) # split everything. Decided to use map function here since I want to turn everything into int.   
+    # subtracts from day variable since I want to move the other direction. Can't use 'hippo' variable since code is too long, would be confusing. Variables are day, month, year
+    hyena_day -= 1
+    # if day is less than 1 then move back a month
+    if hyena_day < 1:
+        lion_month -= 1
+        # if month is less than 1 move back a year
+        if lion_month < 1:
+            lion_month = 12
+            elephant_year -= 1 # move to previous year
+        hyena_day = days_in_mon(lion_month, elephant_year)
+    return f'{hyena_day:02d}-{lion_month:02d}-{elephant_year}' # create an fstring to put it all back together. Adds leading 0s if it needs to. 
+
+def leap_year(elephant_year):
+    "takes a year in YYYY format, and returns True if it's a leap year, False otherwise."
+    if elephant_year % 4 == 0:
+        if elephant_year % 100 == 0:
+            if elephant_year % 400 == 0:
+                return True # this is a leap year
+            else:
+                return False # this is not a leap year
+        else:
+            return True # this is a leap year
+    else:
+        return False # this is not a leap year
+
+
+def after(today):
+    "after takes a valid date string in DD-MM-YYYY format and returns a date string for the next day in DD-MM-YYYY format."
+    if len(today) != 10:
+        return '00-00-0000'
+    else:
+        str_day, str_month, str_year = today.split('-')
+        year = int(str_year)
+        month = int(str_month)
+        day = int(str_day)
+
+        if leap_year(year):
+            feb_max = 29 # this is a leap year
+        else:
+            feb_max = 28 # this is not a leap year
+
+        tmp_day = day + 1 # next day
+
+        mon_max = { 1:31, 2:feb_max, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+        if tmp_day > mon_max[month]:
+            to_day = tmp_day % mon_max[month] # if tmp_day > this month's max, reset to 1
+            tmp_month = month + 1
+        else:
+            to_day = tmp_day
+            tmp_month = month + 0
+
+        if tmp_month > 12:
+            to_month = 1
+            year = year + 1
+        else:
+            to_month = tmp_month + 0
+
+        next_date = str(to_day).zfill(2)+"-"+str(to_month).zfill(2)+"-"+str(year)
+        return next_date
+    
+def dbda(elephant_start_date, hyena_num_days):
+    """returns date after certain number of days. I think that was the point of dbda. I'm not entirely sure but that's what I guess dbda should do."""
+    goodgiraffe, badgiraffe = valid_date(elephant_start_date)# calls valid_date using elephant variable. Checks if it's legit. Links goodgiraffe and badgiraffe. 
+    if not goodgiraffe: #if date isn't valid (goodgiraffe), return error (badgiraffe)
+        return badgiraffe
+    cheetah_end_date = elephant_start_date # turn end date into start date
+    if hyena_num_days >= 0: 
+        for rabidhyena in range(hyena_num_days):
+            cheetah_end_date = after(cheetah_end_date)
+    else:
+        for rabidhyena in range(abs(hyena_num_days)): # need to use absolute value here
+            cheetah_end_date = before(cheetah_end_date) # end date goes here
+    return cheetah_end_date # print
+
+if __name__ == "__main__":
+    # do stuff, main execution block
+    import sys
+    if len(sys.argv) != 3:
+        usage()
+    else:
+        elephant_start_date, hyena_num_days = sys.argv[1], int(sys.argv[2])
+        cheetah_end_date = dbda(elephant_start_date, hyena_num_days)
+        print(f"{cheetah_end_date}")
